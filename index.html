@@ -6,1086 +6,445 @@
 <title>Work Hours Tracker</title>
 
 <style>
-*{box-sizing:border-box}
+    * {
+        box-sizing: border-box;
+    }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f6f8;
-  color:#18202a;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #222;
+    }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px 14px 40px;
-}
+    .container {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+    }
 
-h1{
-  margin:0 0 6px;
-  font-size:28px;
-}
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
 
-.sub{
-  color:#65717e;
-  margin-bottom:20px;
-}
+    .card {
+        background: white;
+        padding: 18px;
+        margin-bottom: 18px;
+        border-radius: 15px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
 
-.card{
-  background:#fff;
-  border:1px solid #dfe4e8;
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:16px;
-}
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
 
-.form{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr auto;
-  gap:10px;
-  align-items:end;
-}
+    input, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 6px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
 
-label{
-  font-size:13px;
-  font-weight:600;
-  display:block;
-  margin-bottom:6px;
-}
+    button {
+        background: #222;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 15px;
+    }
 
-input{
-  width:100%;
-  padding:11px;
-  border:1px solid #cbd3da;
-  border-radius:8px;
-  font-size:16px;
-}
+    button:hover {
+        opacity: 0.85;
+    }
 
-button{
-  border:0;
-  border-radius:8px;
-  padding:11px 15px;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  background:#1f2937;
-  color:white;
-}
+    .period {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
 
-.secondary{
-  background:#e9edf1;
-  color:#202832;
-}
+    .entry {
+        background: #f1f3f5;
+        padding: 12px;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
 
-.danger{
-  background:#b42318!important;
-}
+    .total {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+    }
 
-.green{
-  background:#16803c!important;
-}
+    .quote {
+        font-style: italic;
+        color: #555;
+        margin-top: 5px;
+    }
 
-.msg{
-  min-height:20px;
-  color:#b42318;
-  font-size:14px;
-  margin-top:8px;
-}
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        margin-top: 15px;
+    }
 
-.summary{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
+    .day {
+        padding: 10px 5px;
+        text-align: center;
+        border-radius: 8px;
+        background: #eee;
+    }
 
-.stat{
-  background:#f7f9fa;
-  border-radius:10px;
-  padding:14px;
-}
+    .working {
+        background: #9be7a5;
+        font-weight: bold;
+    }
 
-.stat span{
-  display:block;
-  color:#687581;
-  font-size:13px;
-}
+    .weekday {
+        font-weight: bold;
+        text-align: center;
+    }
 
-.stat strong{
-  font-size:22px;
-  display:block;
-  margin-top:4px;
-}
+    .delete {
+        background: #d9534f;
+        padding: 7px;
+        margin-top: 8px;
+        font-size: 13px;
+    }
 
-.toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
+    @media (max-width: 500px) {
+        .container {
+            padding: 12px;
+        }
 
-.month{
-  font-weight:700;
-  font-size:18px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  text-align:left;
-  padding:10px 7px;
-  border-bottom:1px solid #e6eaed;
-}
-
-th{
-  font-size:13px;
-  color:#66727e;
-}
-
-.right{
-  text-align:right;
-}
-
-.empty{
-  text-align:center;
-  color:#74808b;
-  padding:25px;
-}
-
-/* CALENDAR */
-
-.calendar-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:14px;
-}
-
-.calendar-title{
-  font-size:19px;
-  font-weight:700;
-}
-
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:5px;
-}
-
-.calendar-weekday{
-  text-align:center;
-  font-size:12px;
-  font-weight:bold;
-  color:#687581;
-  padding:6px 0;
-}
-
-.calendar-day{
-  min-height:58px;
-  border:1px solid #e1e6ea;
-  border-radius:8px;
-  background:#fafbfc;
-  padding:7px;
-  cursor:pointer;
-}
-
-.calendar-day:hover{
-  border-color:#9aa6b2;
-}
-
-.calendar-day.empty-day{
-  background:transparent;
-  border:0;
-  cursor:default;
-}
-
-.calendar-day.today{
-  border:2px solid #1f2937;
-}
-
-.calendar-day.worked{
-  background:#dff5e7;
-  border-color:#63bd7b;
-}
-
-.calendar-number{
-  font-weight:700;
-}
-
-.calendar-hours{
-  font-size:11px;
-  margin-top:6px;
-  color:#236b38;
-  font-weight:700;
-}
-
-.day-details{
-  margin-top:15px;
-  background:#f7f9fa;
-  border-radius:10px;
-  padding:14px;
-}
-
-.period{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  padding:9px 0;
-  border-bottom:1px solid #dde3e7;
-}
-
-.period:last-child{
-  border-bottom:0;
-}
-
-.period-buttons{
-  display:flex;
-  gap:5px;
-}
-
-.period-buttons button{
-  padding:6px 9px;
-  font-size:12px;
-}
-
-.total-day{
-  margin-top:12px;
-  font-weight:700;
-}
-
-@media(max-width:700px){
-  .form{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .form button{
-    grid-column:1/-1;
-  }
-
-  .summary{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:500px){
-  .calendar-day{
-    min-height:52px;
-    padding:5px;
-  }
-
-  .calendar-hours{
-    font-size:10px;
-  }
-
-  .period{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-}
+        .period {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
-
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#1f2937">
-<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>Work Hours Tracker</h1>
-<div class="sub">
-Track multiple work periods every day and see your monthly total.
-</div>
+    <h1>Work Hours Tracker</h1>
 
-<!-- ADD WORK PERIOD -->
+    <div class="card">
+        <label>Date</label>
+        <input type="date" id="date">
 
-<div class="card">
+        <div class="period">
+            <div>
+                <label>Start Time</label>
+                <input type="time" id="start">
+            </div>
 
-<form id="workForm">
+            <div>
+                <label>End Time</label>
+                <input type="time" id="end">
+            </div>
+        </div>
 
-<div class="form">
+        <button onclick="addWork()">Add Work Hours</button>
+    </div>
 
-<div>
-<label for="date">Date</label>
-<input id="date" type="date" required>
-</div>
+    <div class="card">
+        <h2>Today's Information</h2>
 
-<div>
-<label for="start">Start time</label>
-<input id="start" type="time" required>
-</div>
+        <div id="todayInfo">
+            Select a date and add your working hours.
+        </div>
+    </div>
 
-<div>
-<label for="end">End time</label>
-<input id="end" type="time" required>
-</div>
+    <div class="card">
+        <h2>Total Hours</h2>
+        <div class="total" id="totalHours">0h 0m</div>
+    </div>
 
-<button type="submit">Add Work Period</button>
+    <div class="card">
+        <h2>Work Calendar</h2>
 
-</div>
+        <label>Select Month</label>
+        <input type="month" id="month" onchange="showCalendar()">
 
-<div class="msg" id="msg"></div>
+        <div class="calendar">
+            <div class="weekday">Sun</div>
+            <div class="weekday">Mon</div>
+            <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div>
+            <div class="weekday">Thu</div>
+            <div class="weekday">Fri</div>
+            <div class="weekday">Sat</div>
+        </div>
 
-</form>
-
-</div>
-
-
-<!-- SUMMARY -->
-
-<div class="card">
-
-<div class="summary">
-
-<div class="stat">
-<span>Selected month</span>
-<strong id="monthName">—</strong>
-</div>
-
-<div class="stat">
-<span>Days worked</span>
-<strong id="days">0</strong>
-</div>
-
-<div class="stat">
-<span>Total hours</span>
-<strong id="total">0h 00m</strong>
-</div>
+        <div id="calendar" class="calendar"></div>
+    </div>
 
 </div>
-
-</div>
-
-
-<!-- DAILY RECORDS -->
-
-<div class="card">
-
-<div class="toolbar">
-
-<div class="month">
-Daily Records
-</div>
-
-<input id="monthPicker" type="month">
-
-</div>
-
-<div style="overflow-x:auto">
-
-<table>
-
-<thead>
-
-<tr>
-<th>Date</th>
-<th>Work Periods</th>
-<th class="right">Total</th>
-<th class="right">Action</th>
-</tr>
-
-</thead>
-
-<tbody id="records"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-
-<!-- CALENDAR -->
-
-<div class="card">
-
-<div class="calendar-header">
-
-<div class="calendar-title">
-Work Calendar
-</div>
-
-<div>
-<button type="button" id="prevMonth" class="secondary">‹</button>
-<button type="button" id="nextMonth" class="secondary">›</button>
-</div>
-
-</div>
-
-<div id="calendar"></div>
-
-<div id="dayDetails"></div>
-
-</div>
-
-
-<!-- CLEAR -->
-
-<div class="card">
-
-<button class="danger" id="clearAll" type="button">
-Clear All Records
-</button>
-
-</div>
-
-</div>
-
 
 <script>
 
-(function(){
+let workData = JSON.parse(localStorage.getItem("workData")) || {};
 
-const KEY="work_hours_tracker_records_v2";
+const quotes = [
+    "Keep moving forward.",
+    "Small steps become big results.",
+    "Consistency creates progress.",
+    "Your effort matters.",
+    "Stay focused.",
+    "Make today count.",
+    "Keep building.",
+    "Progress takes patience.",
+    "One day at a time.",
+    "Keep showing up.",
+    "Hard work adds up.",
+    "Believe in your progress.",
+    "Stay strong.",
+    "Keep going.",
+    "You are getting closer.",
+    "Focus on the goal.",
+    "Do your best today.",
+    "Discipline creates freedom.",
+    "Every hour counts.",
+    "Keep improving."
+];
 
-const $=id=>document.getElementById(id);
+function getQuote(date) {
 
-let records=JSON.parse(localStorage.getItem(KEY)||"{}");
+    let d = new Date(date);
+    let index =
+        (d.getFullYear() * 10000 +
+        (d.getMonth() + 1) * 100 +
+        d.getDate()) % quotes.length;
 
-
-function today(){
-
-const d=new Date();
-
-return d.getFullYear()+"-"+
-String(d.getMonth()+1).padStart(2,"0")+"-"+
-String(d.getDate()).padStart(2,"0");
-
+    return quotes[index];
 }
 
+function calculateHours(start, end) {
 
-function monthNow(){
+    let startParts = start.split(":");
+    let endParts = end.split(":");
 
-return today().slice(0,7);
+    let startMinutes =
+        parseInt(startParts[0]) * 60 +
+        parseInt(startParts[1]);
 
+    let endMinutes =
+        parseInt(endParts[0]) * 60 +
+        parseInt(endParts[1]);
+
+    // Night shift
+    if (endMinutes <= startMinutes) {
+        endMinutes += 24 * 60;
+    }
+
+    return endMinutes - startMinutes;
 }
 
+function formatMinutes(minutes) {
 
-$("date").value=today();
+    let hours = Math.floor(minutes / 60);
+    let mins = minutes % 60;
 
-$("monthPicker").value=monthNow();
-
-
-/* TIME CALCULATION */
-
-function minutes(start,end){
-
-const [sh,sm]=start.split(":").map(Number);
-
-const [eh,em]=end.split(":").map(Number);
-
-let a=sh*60+sm;
-
-let b=eh*60+em;
-
-if(b<a)b+=1440;
-
-return b-a;
-
+    return hours + "h " + mins + "m";
 }
 
+function addWork() {
 
-function hm(m){
+    let date = document.getElementById("date").value;
+    let start = document.getElementById("start").value;
+    let end = document.getElementById("end").value;
 
-return Math.floor(m/60)+"h "+
-String(m%60).padStart(2,"0")+"m";
+    if (!date || !start || !end) {
+        alert("Please enter the date, start time, and end time.");
+        return;
+    }
 
+    if (!workData[date]) {
+        workData[date] = [];
+    }
+
+    workData[date].push({
+        start: start,
+        end: end
+    });
+
+    localStorage.setItem("workData", JSON.stringify(workData));
+
+    showToday(date);
+
+    document.getElementById("start").value = "";
+    document.getElementById("end").value = "";
+
+    showCalendar();
+    updateTotal();
 }
 
+function showToday(date) {
 
-function niceDate(s){
+    let box = document.getElementById("todayInfo");
 
-const [y,m,d]=s.split("-").map(Number);
+    if (!workData[date]) {
 
-return new Date(
-Date.UTC(y,m-1,d)
-).toLocaleDateString(undefined,{
-month:"short",
-day:"numeric",
-year:"numeric",
-timeZone:"UTC"
+        box.innerHTML = `
+            <strong>${date}</strong>
+            <div class="quote">${getQuote(date)}</div>
+        `;
+
+        return;
+    }
+
+    let html = `
+        <strong>${date}</strong>
+        <div class="quote">"${getQuote(date)}"</div>
+    `;
+
+    let total = 0;
+
+    workData[date].forEach((work, index) => {
+
+        let minutes = calculateHours(work.start, work.end);
+        total += minutes;
+
+        html += `
+            <div class="entry">
+                <strong>${work.start} → ${work.end}</strong>
+                <br>
+                ${formatMinutes(minutes)}
+
+                <button class="delete"
+                    onclick="deleteWork('${date}', ${index})">
+                    Delete
+                </button>
+            </div>
+        `;
+    });
+
+    html += `
+        <br>
+        <strong>Daily Total: ${formatMinutes(total)}</strong>
+    `;
+
+    box.innerHTML = html;
+}
+
+function deleteWork(date, index) {
+
+    workData[date].splice(index, 1);
+
+    if (workData[date].length === 0) {
+        delete workData[date];
+    }
+
+    localStorage.setItem("workData", JSON.stringify(workData));
+
+    showToday(date);
+    showCalendar();
+    updateTotal();
+}
+
+function updateTotal() {
+
+    let total = 0;
+
+    Object.values(workData).forEach(day => {
+
+        day.forEach(work => {
+            total += calculateHours(work.start, work.end);
+        });
+
+    });
+
+    document.getElementById("totalHours").innerText =
+        formatMinutes(total);
+}
+
+function showCalendar() {
+
+    let month = document.getElementById("month").value;
+
+    if (!month) return;
+
+    let [year, monthNumber] = month.split("-");
+
+    year = parseInt(year);
+    monthNumber = parseInt(monthNumber);
+
+    let firstDay =
+        new Date(year, monthNumber - 1, 1).getDay();
+
+    let daysInMonth =
+        new Date(year, monthNumber, 0).getDate();
+
+    let calendar = document.getElementById("calendar");
+
+    calendar.innerHTML = "";
+
+    for (let i = 0; i < firstDay; i++) {
+
+        let blank = document.createElement("div");
+        calendar.appendChild(blank);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+
+        let date =
+            year + "-" +
+            String(monthNumber).padStart(2, "0") + "-" +
+            String(day).padStart(2, "0");
+
+        let div = document.createElement("div");
+
+        div.className = "day";
+
+        if (workData[date]) {
+            div.classList.add("working");
+        }
+
+        div.innerText = day;
+
+        div.onclick = function() {
+
+            document.getElementById("date").value = date;
+            showToday(date);
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        };
+
+        calendar.appendChild(div);
+    }
+}
+
+document.getElementById("date").addEventListener("change", function() {
+    showToday(this.value);
 });
 
-}
+let today = new Date();
 
+let todayString =
+    today.getFullYear() + "-" +
+    String(today.getMonth() + 1).padStart(2, "0") + "-" +
+    String(today.getDate()).padStart(2, "0");
 
-function save(){
+document.getElementById("date").value = todayString;
 
-localStorage.setItem(KEY,JSON.stringify(records));
+document.getElementById("month").value =
+    todayString.substring(0, 7);
 
-}
-
-
-/* GET ALL PERIODS FOR A DAY */
-
-function getPeriods(date){
-
-if(!records[date]){
-
-records[date]=[];
-
-}
-
-return records[date];
-
-}
-
-
-/* TOTAL FOR DAY */
-
-function dayTotal(date){
-
-return getPeriods(date)
-.reduce((sum,p)=>sum+p.minutes,0);
-
-}
-
-
-/* ADD WORK PERIOD */
-
-$("workForm").addEventListener("submit",function(e){
-
-e.preventDefault();
-
-const date=$("date").value;
-
-const start=$("start").value;
-
-const end=$("end").value;
-
-if(!date||!start||!end){
-
-$("msg").textContent=
-"Please enter date, start time, and end time.";
-
-return;
-
-}
-
-const mins=minutes(start,end);
-
-if(mins<=0||mins>1440){
-
-$("msg").textContent=
-"Please enter valid working times.";
-
-return;
-
-}
-
-
-/* Create array if day doesn't exist */
-
-if(!records[date]){
-
-records[date]=[];
-
-}
-
-
-/* Add another period instead of replacing */
-
-records[date].push({
-
-start:start,
-
-end:end,
-
-minutes:mins
-
-});
-
-
-save();
-
-$("monthPicker").value=date.slice(0,7);
-
-$("msg").textContent=
-"Work period added!";
-
-$("start").value="";
-
-$("end").value="";
-
-render();
-
-renderCalendar();
-
-});
-
-
-/* RENDER DAILY TABLE */
-
-function render(){
-
-const mo=$("monthPicker").value||monthNow();
-
-const list=Object.keys(records)
-
-.filter(date=>date.slice(0,7)===mo)
-
-.filter(date=>records[date].length>0)
-
-.sort();
-
-
-let total=0;
-
-list.forEach(date=>{
-
-total+=dayTotal(date);
-
-});
-
-
-const [y,m]=mo.split("-").map(Number);
-
-
-$("monthName").textContent=
-
-new Date(Date.UTC(y,m-1,1))
-
-.toLocaleDateString(undefined,{
-
-month:"long",
-
-year:"numeric",
-
-timeZone:"UTC"
-
-});
-
-
-$("days").textContent=list.length;
-
-$("total").textContent=hm(total);
-
-
-const body=$("records");
-
-
-if(!list.length){
-
-body.innerHTML=
-
-'<tr><td colspan="4" class="empty">'+
-'No work records for this month.'+
-'</td></tr>';
-
-return;
-
-}
-
-
-body.innerHTML=list.map(date=>{
-
-const periods=records[date];
-
-const periodText=periods.map(p=>
-p.start+" – "+p.end
-).join("<br>");
-
-return `
-
-<tr>
-
-<td>${niceDate(date)}</td>
-
-<td>${periodText}</td>
-
-<td class="right">${hm(dayTotal(date))}</td>
-
-<td class="right">
-
-<button
-class="secondary"
-type="button"
-onclick="showDay('${date}')">
-
-View
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-}).join("");
-
-}
-
-
-/* CALENDAR */
-
-function renderCalendar(){
-
-const mo=$("monthPicker").value||monthNow();
-
-const [year,month]=mo.split("-").map(Number);
-
-const firstDay=new Date(
-Date.UTC(year,month-1,1)
-).getUTCDay();
-
-const daysInMonth=new Date(
-Date.UTC(year,month,0)
-).getUTCDate();
-
-
-let html="";
-
-html+=`
-
-<div class="calendar-grid">
-
-<div class="calendar-weekday">Sun</div>
-<div class="calendar-weekday">Mon</div>
-<div class="calendar-weekday">Tue</div>
-<div class="calendar-weekday">Wed</div>
-<div class="calendar-weekday">Thu</div>
-<div class="calendar-weekday">Fri</div>
-<div class="calendar-weekday">Sat</div>
-
-`;
-
-
-/* Empty spaces before first day */
-
-for(let i=0;i<firstDay;i++){
-
-html+=`<div class="calendar-day empty-day"></div>`;
-
-}
-
-
-/* Days */
-
-for(let day=1;day<=daysInMonth;day++){
-
-const date=
-
-year+"-"+
-
-String(month).padStart(2,"0")+"-"+
-
-String(day).padStart(2,"0");
-
-
-const worked=
-records[date] &&
-records[date].length>0;
-
-
-const isToday=date===today();
-
-
-html+=`
-
-<div
-
-class="calendar-day
-${worked?"worked":""}
-${isToday?"today":""}"
-
-onclick="showDay('${date}')"
-
->
-
-<div class="calendar-number">
-${day}
-</div>
-
-${worked?
-
-`<div class="calendar-hours">
-${hm(dayTotal(date))}
-</div>`
-
-:""}
-
-</div>
-
-`;
-
-}
-
-
-html+="</div>";
-
-$("calendar").innerHTML=html;
-
-}
-
-
-/* SHOW DAY DETAILS */
-
-window.showDay=function(date){
-
-const periods=records[date]||[];
-
-if(!periods.length){
-
-$("dayDetails").innerHTML=`
-
-<div class="day-details">
-
-<strong>${niceDate(date)}</strong>
-
-<p>No work recorded for this day.</p>
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-let html=`
-
-<div class="day-details">
-
-<strong>${niceDate(date)}</strong>
-
-`;
-
-periods.forEach((p,index)=>{
-
-html+=`
-
-<div class="period">
-
-<div>
-
-<strong>Period ${index+1}</strong><br>
-
-${p.start} – ${p.end}
-
-<br>
-
-<small>${hm(p.minutes)}</small>
-
-</div>
-
-<div class="period-buttons">
-
-<button
-
-class="secondary"
-
-onclick="editPeriod('${date}',${index})">
-
-Edit
-
-</button>
-
-<button
-
-class="danger"
-
-onclick="deletePeriod('${date}',${index})">
-
-Delete
-
-</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-
-html+=`
-
-<div class="total-day">
-
-Day total: ${hm(dayTotal(date))}
-
-</div>
-
-</div>
-
-`;
-
-$("dayDetails").innerHTML=html;
-
-};
-
-
-/* EDIT PERIOD */
-
-window.editPeriod=function(date,index){
-
-const p=records[date][index];
-
-$("date").value=date;
-
-$("start").value=p.start;
-
-$("end").value=p.end;
-
-
-/* Remove old period */
-
-records[date].splice(index,1);
-
-if(records[date].length===0){
-
-delete records[date];
-
-}
-
-save();
-
-render();
-
-renderCalendar();
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-};
-
-
-/* DELETE PERIOD */
-
-window.deletePeriod=function(date,index){
-
-records[date].splice(index,1);
-
-if(records[date].length===0){
-
-delete records[date];
-
-}
-
-save();
-
-render();
-
-renderCalendar();
-
-$("dayDetails").innerHTML="";
-
-};
-
-
-/* MONTH CHANGE */
-
-$("monthPicker").addEventListener("change",function(){
-
-render();
-
-renderCalendar();
-
-$("dayDetails").innerHTML="";
-
-});
-
-
-/* PREVIOUS MONTH */
-
-$("prevMonth").addEventListener("click",function(){
-
-const [y,m]=$("monthPicker").value.split("-").map(Number);
-
-const d=new Date(Date.UTC(y,m-2,1));
-
-$("monthPicker").value=
-
-d.getUTCFullYear()+"-"+
-
-String(d.getUTCMonth()+1).padStart(2,"0");
-
-render();
-
-renderCalendar();
-
-$("dayDetails").innerHTML="";
-
-});
-
-
-/* NEXT MONTH */
-
-$("nextMonth").addEventListener("click",function(){
-
-const [y,m]=$("monthPicker").value.split("-").map(Number);
-
-const d=new Date(Date.UTC(y,m,1));
-
-$("monthPicker").value=
-
-d.getUTCFullYear()+"-"+
-
-String(d.getUTCMonth()+1).padStart(2,"0");
-
-render();
-
-renderCalendar();
-
-$("dayDetails").innerHTML="";
-
-});
-
-
-/* CLEAR EVERYTHING */
-
-$("clearAll").addEventListener("click",function(){
-
-if(confirm("Delete ALL saved work records?")){
-
-records={};
-
-save();
-
-render();
-
-renderCalendar();
-
-$("dayDetails").innerHTML="";
-
-}
-
-});
-
-
-/* INITIAL DISPLAY */
-
-render();
-
-renderCalendar();
-
-
-})();
-
-
-/* SERVICE WORKER */
-
-if("serviceWorker" in navigator){
-
-window.addEventListener("load",function(){
-
-navigator.serviceWorker.register("./sw.js")
-.catch(function(){});
-
-});
-
-}
+showToday(todayString);
+showCalendar();
+updateTotal();
 
 </script>
 
